@@ -1,26 +1,145 @@
-//your variable declarations here
+SpaceShip spaceship;
+Star [] stars;
+boolean accel, left, right;
 public void setup() 
 {
-  //your code here
+  background(0);
+  size(600,600);
+  spaceship = new SpaceShip();
+  stars = new Star[(int)(Math.random()*16)+15];
+  for(int i = 0; i < stars.length; i++)
+  {
+    stars[i] = new Star();
+  }
 }
 public void draw() 
 {
-  //your code here
+  background(0);
+  spaceship.show();
+  spaceship.move();
+  for(int i = 0; i < stars.length; i++)
+  {
+    stars[i].move();
+    stars[i].show();
+  }
+  keyDo();
 }
-class SpaceShip //extends Floater  
-{   
-    //your code here
+public void keyPressed()
+{
+  if(key == 'a')
+  {
+    left = true;
+  }
+  if(key == 'd')
+  {
+    right = true;
+  }
+  if(key == 'w')
+  {
+    accel = true;
+  }
+}
+public void keyDo()
+{
+  if(left == true)
+  {
+    spaceship.rotate(-10);
+  }
+  if(right == true)
+  {
+    spaceship.rotate(10);
+  }
+  if(accel == true)
+  {
+    spaceship.accelerate(.069);
+  }
+}
+public void keyReleased()
+{
+  if(key == 'a')
+  {
+    left = false;
+  }
+  if(key == 'd')
+  {
+    right = false;
+  }
+  if(key == 'w')
+  {
+    accel = false;
+  }
+  if(key == 'h')
+  {
+    spaceship.setDirectionX(0);
+    spaceship.setDirectionY(0);
+    spaceship.setPointDirection((int)(Math.random()*361));
+    spaceship.setX((int)(Math.random()*601));
+    spaceship.setY((int)(Math.random()*601));
+    spaceship.accelerate(0);
+  }
+}
+class Star
+{
+  private int sX, sY;
+  public Star()
+  {
+    sX = (int)(Math.random()*801)-100;
+    sY = (int)(Math.random()*801)-100;
+  }
+  public void move()
+  {
+    sY++;
+    if(sY > 600)
+    {
+      sY = 0;
+    }
+  }
+  public void show()
+  {
+    ellipse(sX, sY, 2, 2);
+  }
+  public void setStarX(int x){sX = x;}
+  public int getStarX(){return sX;}
+  public void setStarY(int y){sY = y;}
+  public int getStarY(){return sY;}
+}
+class SpaceShip extends Floater  
+{
+  public SpaceShip()
+  {
+    corners = 4;
+    int[] xS = {-8, 16, -8, -2};
+    int[] yS = {-8, 0, 8, 0};
+    xCorners = xS;
+    yCorners = yS;
+    myColor = color(255);
+    myCenterX = 300;
+    myCenterY = 300;
+    myDirectionX = 0;
+    myDirectionY = 0;
+    myPointDirection = 0;
+  }
+  public void setX(int x){myCenterX = x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY = y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX = x;}
+  public double getDirectionX(){return myDirectionX;}
+  public void setDirectionY(double y){myDirectionY = y;}
+  public double getDirectionY(){return myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection = degrees;}
+  public double getPointDirection(){return myPointDirection;}
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
-  protected int[] xCorners;   
+  protected int[] xCorners;
   protected int[] yCorners;   
   protected int myColor;   
   protected double myCenterX, myCenterY; //holds center coordinates   
   protected double myDirectionX, myDirectionY; //holds x and y coordinates of the vector for direction of travel   
   protected double myPointDirection; //holds current direction the ship is pointing in degrees    
-  abstract public void setX(int x);  
+  abstract public void setX(int x);
   abstract public int getX();   
   abstract public void setY(int y);   
   abstract public int getY();   
