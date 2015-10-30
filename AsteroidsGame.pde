@@ -107,9 +107,9 @@ class SpaceShip extends Floater
 {
   public SpaceShip()
   {
-    corners = 4;
-    int[] xS = {-8, 16, -8, -2};
-    int[] yS = {-8, 0, 8, 0};
+    corners = 8;
+    int[] xS = {-8, -2, 2, 16, 2, -2, -8, -2};
+    int[] yS = {-8, -8, -5, 0, 5, 8, 8, 0};
     xCorners = xS;
     yCorners = yS;
     myColor = color(255);
@@ -206,4 +206,3 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     endShape(CLOSE);  
   }   
 } 
-
