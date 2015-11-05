@@ -1,6 +1,7 @@
 SpaceShip spaceship;
 Star [] stars;
 boolean accel, left, right;
+int a = 1;
 public void setup() 
 {
   background(0);
@@ -15,14 +16,30 @@ public void setup()
 public void draw() 
 {
   background(0);
-  spaceship.show();
-  spaceship.move();
   for(int i = 0; i < stars.length; i++)
   {
     stars[i].move();
     stars[i].show();
   }
-  keyDo();
+  if(left == true)
+  {
+    spaceship.rotate(-10);
+  }
+  if(right == true)
+  {
+    spaceship.rotate(10);
+  }
+  if(accel == true)
+  {
+    spaceship.accelerate(.069);
+    if(a == 1)
+    {
+      spaceship.rocket();
+    }
+    a *= -1;
+  }
+  spaceship.show();
+  spaceship.move();
 }
 public void keyPressed()
 {
@@ -37,21 +54,6 @@ public void keyPressed()
   if(key == 'w')
   {
     accel = true;
-  }
-}
-public void keyDo()
-{
-  if(left == true)
-  {
-    spaceship.rotate(-10);
-  }
-  if(right == true)
-  {
-    spaceship.rotate(10);
-  }
-  if(accel == true)
-  {
-    spaceship.accelerate(.069);
   }
 }
 public void keyReleased()
@@ -105,13 +107,21 @@ class Star
 }
 class SpaceShip extends Floater  
 {
+  private int vertices;
+  private int[] xRocketCorners;
+  private int[] yRocketCorners;
   public SpaceShip()
   {
     corners = 8;
+    vertices = 3;
     int[] xS = {-8, -2, 2, 16, 2, -2, -8, -2};
     int[] yS = {-8, -8, -5, 0, 5, 8, 8, 0};
+    int[] xR = {-8, -2, -2};
+    int[] yR = {0, -4, 4};
     xCorners = xS;
     yCorners = yS;
+    xRocketCorners = xR;
+    yRocketCorners = yR;
     myColor = color(255);
     myCenterX = 300;
     myCenterY = 300;
@@ -129,6 +139,22 @@ class SpaceShip extends Floater
   public double getDirectionY(){return myDirectionY;}
   public void setPointDirection(int degrees){myPointDirection = degrees;}
   public double getPointDirection(){return myPointDirection;}
+  public void rocket()
+  {
+    fill(255, 0, 0);
+    stroke(255, 0, 0);
+    double dRadians = myPointDirection*(Math.PI/180);                 
+    int xRocketRotatedTranslated, yRocketRotatedTranslated;    
+    beginShape();         
+    for(int nI = 0; nI < vertices; nI++)    
+    {     
+      //rotate and translate the coordinates of the floater using current direction 
+      xRocketRotatedTranslated = (int)((xRocketCorners[nI]* Math.cos(dRadians)) - (yRocketCorners[nI] * Math.sin(dRadians))+myCenterX);     
+      yRocketRotatedTranslated = (int)((xRocketCorners[nI]* Math.sin(dRadians)) + (yRocketCorners[nI] * Math.cos(dRadians))+myCenterY);      
+      vertex(xRocketRotatedTranslated,yRocketRotatedTranslated);    
+    }   
+    endShape(CLOSE);  
+  }
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
