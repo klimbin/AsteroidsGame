@@ -1,12 +1,13 @@
 SpaceShip spaceship;
 Star [] stars;
-boolean accel, left, right;
+boolean left, right, accel;
 public void setup() 
 {
   background(0);
-  size(600,600);
+  size(800,800);
+  colorMode(HSB, 100);
   spaceship = new SpaceShip();
-  stars = new Star[(int)(Math.random()*16)+15];
+  stars = new Star[50];
   for(int i = 0; i < stars.length; i++)
   {
     stars[i] = new Star();
@@ -15,20 +16,40 @@ public void setup()
 public void draw() 
 {
   background(0);
-  spaceship.show();
-  spaceship.move();
   for(int i = 0; i < stars.length; i++)
   {
     stars[i].move();
     stars[i].show();
   }
-  keyDo();
+  if(left == true)
+  {
+    spaceship.rotate(-6);
+  }
+  if(right == true)
+  {
+    spaceship.rotate(6);
+  }
+  if(accel == true)
+  {
+    spaceship.accelerate(.069);
+    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 5)
+    {
+      spaceship.setDirectionX(spaceship.getDirectionX() * .9);
+      spaceship.setDirectionY(spaceship.getDirectionY() * .9);
+    }
+    if(Math.random() < .7)
+    {
+      spaceship.rocket();
+    }
+  }
+  spaceship.show();
+  spaceship.move();
 }
 public void keyPressed()
 {
   if(key == 'a')
   {
-    left = true;
+    left = true; 
   }
   if(key == 'd')
   {
@@ -37,21 +58,6 @@ public void keyPressed()
   if(key == 'w')
   {
     accel = true;
-  }
-}
-public void keyDo()
-{
-  if(left == true)
-  {
-    spaceship.rotate(-10);
-  }
-  if(right == true)
-  {
-    spaceship.rotate(10);
-  }
-  if(accel == true)
-  {
-    spaceship.accelerate(.069);
   }
 }
 public void keyReleased()
@@ -80,41 +86,48 @@ public void keyReleased()
 }
 class Star
 {
-  private int sX, sY;
+  private int sX, sY, sC;
   public Star()
   {
-    sX = (int)(Math.random()*801)-100;
-    sY = (int)(Math.random()*801)-100;
+    sX = (int)(Math.random()*1001)-100;
+    sY = (int)(Math.random()*1001)-100;
+    sC = color((int)(Math.random()*101), 70, 70);
   }
   public void move()
   {
     sY++;
-    if(sY > 600)
+    if(sY > 800)
     {
       sY = 0;
     }
   }
   public void show()
   {
+    fill(sC);
+    stroke(sC);
     ellipse(sX, sY, 2, 2);
   }
-  public void setStarX(int x){sX = x;}
-  public int getStarX(){return sX;}
-  public void setStarY(int y){sY = y;}
-  public int getStarY(){return sY;}
 }
 class SpaceShip extends Floater  
 {
+  private int vertices;
+  private int[] xRocketCorners;
+  private int[] yRocketCorners;
   public SpaceShip()
   {
-    corners = 4;
-    int[] xS = {-8, 16, -8, -2};
-    int[] yS = {-8, 0, 8, 0};
+    corners = 8;
+    vertices = 3;
+    int[] xS = {-12, -3, 3, 22, 3, -3, -12, -3};
+    int[] yS = {-12, -11, -7, 0, 7, 11, 12, 0};
+    int[] xR = {-15, -3, -3};
+    int[] yR = {0, -9, 9};
     xCorners = xS;
     yCorners = yS;
-    myColor = color(255);
-    myCenterX = 300;
-    myCenterY = 300;
+    xRocketCorners = xR;
+    yRocketCorners = yR;
+    myColor = color(0, 0, 100);
+    myCenterX = 400;
+    myCenterY = 400;
     myDirectionX = 0;
     myDirectionY = 0;
     myPointDirection = 0;
@@ -129,6 +142,22 @@ class SpaceShip extends Floater
   public double getDirectionY(){return myDirectionY;}
   public void setPointDirection(int degrees){myPointDirection = degrees;}
   public double getPointDirection(){return myPointDirection;}
+  public void rocket()
+  {
+    fill(5, 70, 100, 30);
+    stroke(100, 70, 100);
+    double dRadians = myPointDirection*(Math.PI/180);                 
+    int xRocketRotatedTranslated, yRocketRotatedTranslated;    
+    beginShape();         
+    for(int nI = 0; nI < vertices; nI++)    
+    {     
+      //rotate and translate the coordinates of the floater using current direction 
+      xRocketRotatedTranslated = (int)((xRocketCorners[nI]* Math.cos(dRadians)) - (yRocketCorners[nI] * Math.sin(dRadians))+myCenterX);     
+      yRocketRotatedTranslated = (int)((xRocketCorners[nI]* Math.sin(dRadians)) + (yRocketCorners[nI] * Math.cos(dRadians))+myCenterY);      
+      vertex(xRocketRotatedTranslated,yRocketRotatedTranslated);    
+    }   
+    endShape(CLOSE);  
+  }
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
