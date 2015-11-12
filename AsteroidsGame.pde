@@ -1,16 +1,22 @@
+Asteroid [] asteroids;
 SpaceShip spaceship;
 Star [] stars;
 boolean left, right, accel;
 public void setup() 
 {
   background(0);
-  size(800,800);
+  size(700,700);
   colorMode(HSB, 100);
   spaceship = new SpaceShip();
+  asteroids = new Asteroid[7];
   stars = new Star[50];
   for(int i = 0; i < stars.length; i++)
   {
     stars[i] = new Star();
+  }
+  for(int i = 0; i < asteroids.length; i++)
+  {
+    asteroids[i] = new Asteroid();
   }
 }
 public void draw() 
@@ -20,6 +26,11 @@ public void draw()
   {
     stars[i].move();
     stars[i].show();
+  }
+  for(int i = 0; i < asteroids.length; i++)
+  {
+    asteroids[i].move();
+    asteroids[i].show();
   }
   if(left == true)
   {
@@ -32,7 +43,7 @@ public void draw()
   if(accel == true)
   {
     spaceship.accelerate(.069);
-    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 5)
+    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 4)
     {
       spaceship.setDirectionX(spaceship.getDirectionX() * .9);
       spaceship.setDirectionY(spaceship.getDirectionY() * .9);
@@ -89,14 +100,14 @@ class Star
   private int sX, sY, sC;
   public Star()
   {
-    sX = (int)(Math.random()*1001)-100;
-    sY = (int)(Math.random()*1001)-100;
+    sX = (int)(Math.random()*701);
+    sY = (int)(Math.random()*801)-100;
     sC = color((int)(Math.random()*101), 70, 70);
   }
   public void move()
   {
     sY++;
-    if(sY > 800)
+    if(sY > 700)
     {
       sY = 0;
     }
@@ -108,6 +119,67 @@ class Star
     ellipse(sX, sY, 2, 2);
   }
 }
+class Asteroid extends Floater
+{
+  private int rSpeed;
+  public Asteroid()
+  {
+    rSpeed = (int)(Math.random() * 3) + 3;
+    corners = 5;
+    int[] xS = {-12, 5, 7, 15, 9, -2};
+    int[] yS = {-12, -11, 0, 7, 12, -3};
+    xCorners = xS;
+    yCorners = yS;
+    myColor = color(27, 0, 67);
+    if((int)(Math.random() * 2) == 0)
+    {
+      myCenterX = (int)(Math.random()*251);
+    }
+    else
+    {
+      myCenterX = (int)(Math.random()*251) + 450;
+    }
+    if((int)(Math.random() * 2) == 0)
+    {
+      myCenterY = (int)(Math.random()*251);
+    }
+    else
+    {
+      myCenterY = (int)(Math.random()*251) + 450;
+    }
+    if((int)(Math.random()*2) == 0)
+    {
+      myDirectionX = (int)(Math.random() * 2) + 1;
+    }
+    else
+    {
+      myDirectionX = -1 * (int)(Math.random() * 2) - 1;
+    }
+    if((int)(Math.random()*2) == 0)
+    {
+      myDirectionY = (int)(Math.random() * 2) + 1;
+    }
+    else
+    {
+      myDirectionY = -1 * (int)(Math.random() * 2) - 1; 
+    }
+  }
+  public void move()
+  {
+    rotate(rSpeed);
+    super.move();
+  }
+  public void setX(int x){myCenterX = x;}
+  public int getX(){return (int)myCenterX;}
+  public void setY(int y){myCenterY = y;}
+  public int getY(){return (int)myCenterY;}
+  public void setDirectionX(double x){myDirectionX = x;}
+  public double getDirectionX(){return myDirectionX;}
+  public void setDirectionY(double y){myDirectionY = y;}
+  public double getDirectionY(){return myDirectionY;}
+  public void setPointDirection(int degrees){myPointDirection = degrees;}
+  public double getPointDirection(){return myPointDirection;}
+}
 class SpaceShip extends Floater  
 {
   private int vertices;
@@ -117,17 +189,17 @@ class SpaceShip extends Floater
   {
     corners = 8;
     vertices = 3;
-    int[] xS = {-12, -3, 3, 22, 3, -3, -12, -3};
+    int[] xS = {-12, -3, 4, 22, 4, -3, -12, -3};
     int[] yS = {-12, -11, -7, 0, 7, 11, 12, 0};
-    int[] xR = {-15, -3, -3};
+    int[] xR = {-17, -3, -3};
     int[] yR = {0, -9, 9};
     xCorners = xS;
     yCorners = yS;
     xRocketCorners = xR;
     yRocketCorners = yR;
     myColor = color(0, 0, 100);
-    myCenterX = 400;
-    myCenterY = 400;
+    myCenterX = 350;
+    myCenterY = 350;
     myDirectionX = 0;
     myDirectionY = 0;
     myPointDirection = 0;
