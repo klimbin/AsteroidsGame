@@ -2,6 +2,7 @@ Asteroid [] asteroids;
 SpaceShip spaceship;
 Star [] stars;
 boolean left, right, accel;
+int opac;
 public void setup() 
 {
   background(0);
@@ -55,6 +56,10 @@ public void draw()
   }
   spaceship.show();
   spaceship.move();
+  if(opac > 0)
+  {
+    opac--;
+  }
 }
 public void keyPressed()
 {
@@ -87,6 +92,8 @@ public void keyReleased()
   }
   if(key == 'h')
   {
+    opac = 255;
+    background(0, 0, 100, opac);
     spaceship.setDirectionX(0);
     spaceship.setDirectionY(0);
     spaceship.setPointDirection((int)(Math.random()*361));
@@ -119,15 +126,20 @@ class Star
     ellipse(sX, sY, 2, 2);
   }
 }
+public int varyNum(int num)
+{
+  num = num + (int)(Math.random()*9 - 4);
+  return num;
+}
 class Asteroid extends Floater
 {
   private int rSpeed;
   public Asteroid()
   {
     rSpeed = (int)(Math.random() * 3) + 3;
-    corners = 5;
-    int[] xS = {-12, 5, 7, 15, 9, -2};
-    int[] yS = {-12, -11, 0, 7, 12, -3};
+    corners = 7;
+    int[] xS = {varyNum(-20), varyNum(-13), varyNum(1), varyNum(13), varyNum(20), varyNum(9), varyNum(-13)};
+    int[] yS = {varyNum(0), varyNum(-11), varyNum(-16), varyNum(-13), varyNum(0), varyNum(16), varyNum(12)};
     xCorners = xS;
     yCorners = yS;
     myColor = color(27, 0, 67);
