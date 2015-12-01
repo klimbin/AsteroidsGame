@@ -1,4 +1,4 @@
-Asteroid [] asteroids;
+ArrayList <Asteroid> asteroids;
 SpaceShip spaceship;
 Star [] stars;
 boolean left, right, accel;
@@ -9,15 +9,15 @@ public void setup()
   size(700,700);
   colorMode(HSB, 100);
   spaceship = new SpaceShip();
-  asteroids = new Asteroid[7];
-  stars = new Star[50];
+  asteroids = new ArrayList <Asteroid>();
+  stars = new Star[40];
   for(int i = 0; i < stars.length; i++)
   {
     stars[i] = new Star();
   }
-  for(int i = 0; i < asteroids.length; i++)
+  for(int i = 0; i < 9; i++)
   {
-    asteroids[i] = new Asteroid();
+    asteroids.add(new Asteroid());
   }
 }
 public void draw() 
@@ -25,13 +25,12 @@ public void draw()
   background(0);
   for(int i = 0; i < stars.length; i++)
   {
-    stars[i].move();
     stars[i].show();
   }
-  for(int i = 0; i < asteroids.length; i++)
+  for(Asteroid temp : asteroids)
   {
-    asteroids[i].move();
-    asteroids[i].show();
+    temp.move();
+    temp.show();
   }
   if(left == true)
   {
@@ -44,7 +43,7 @@ public void draw()
   if(accel == true)
   {
     spaceship.accelerate(.069);
-    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 4)
+    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 3)
     {
       spaceship.setDirectionX(spaceship.getDirectionX() * .9);
       spaceship.setDirectionY(spaceship.getDirectionY() * .9);
@@ -58,48 +57,36 @@ public void draw()
   spaceship.move();
   if(opac > 0)
   {
-    opac--;
+    opac = opac--;
   }
+    //   noFill();
+    // stroke(0, 0, 100);
+    // for(int d = 50; d > 0; d--)
+    // {
+    //   ellipse(spaceship.getX(), spaceship.getY(), d, d);
 }
 public void keyPressed()
 {
-  if(key == 'a')
-  {
-    left = true; 
-  }
-  if(key == 'd')
-  {
-    right = true;
-  }
-  if(key == 'w')
-  {
-    accel = true;
-  }
+  if(key == 'a'){left = true;}
+  if(key == 'd'){right = true;}
+  if(key == 'w'){accel = true;}
 }
 public void keyReleased()
 {
-  if(key == 'a')
-  {
-    left = false;
-  }
-  if(key == 'd')
-  {
-    right = false;
-  }
-  if(key == 'w')
-  {
-    accel = false;
-  }
+  if(key == 'a'){left = false;}
+  if(key == 'd'){right = false;}
+  if(key == 'w'){accel = false;}
   if(key == 'h')
   {
-    opac = 255;
-    background(0, 0, 100, opac);
-    spaceship.setDirectionX(0);
-    spaceship.setDirectionY(0);
-    spaceship.setPointDirection((int)(Math.random()*361));
-    spaceship.setX((int)(Math.random()*601));
-    spaceship.setY((int)(Math.random()*601));
-    spaceship.accelerate(0);
+      opac = 100;
+      fill(0, 0, opac);
+      rect(-1, -1, 701, 701);
+      spaceship.setDirectionX(0);
+      spaceship.setDirectionY(0);
+      spaceship.setPointDirection((int)(Math.random()*361));
+      spaceship.setX((int)(Math.random()*701));
+      spaceship.setY((int)(Math.random()*701));
+      spaceship.accelerate(0);
   }
 }
 class Star
@@ -107,17 +94,9 @@ class Star
   private int sX, sY, sC;
   public Star()
   {
-    sX = (int)(Math.random()*701);
-    sY = (int)(Math.random()*801)-100;
+    sX = (int)(Math.random()*700);
+    sY = (int)(Math.random()*700);
     sC = color((int)(Math.random()*101), 70, 70);
-  }
-  public void move()
-  {
-    sY++;
-    if(sY > 700)
-    {
-      sY = 0;
-    }
   }
   public void show()
   {
@@ -136,45 +115,17 @@ class Asteroid extends Floater
   private int rSpeed;
   public Asteroid()
   {
-    rSpeed = (int)(Math.random() * 3) + 3;
+    rSpeed = (int)(Math.random() * 3) + 2;
     corners = 7;
     int[] xS = {varyNum(-20), varyNum(-13), varyNum(1), varyNum(13), varyNum(20), varyNum(9), varyNum(-13)};
     int[] yS = {varyNum(0), varyNum(-11), varyNum(-16), varyNum(-13), varyNum(0), varyNum(16), varyNum(12)};
     xCorners = xS;
     yCorners = yS;
     myColor = color(27, 0, 67);
-    if((int)(Math.random() * 2) == 0)
-    {
-      myCenterX = (int)(Math.random()*251);
-    }
-    else
-    {
-      myCenterX = (int)(Math.random()*251) + 450;
-    }
-    if((int)(Math.random() * 2) == 0)
-    {
-      myCenterY = (int)(Math.random()*251);
-    }
-    else
-    {
-      myCenterY = (int)(Math.random()*251) + 450;
-    }
-    if((int)(Math.random()*2) == 0)
-    {
-      myDirectionX = (int)(Math.random() * 2) + 1;
-    }
-    else
-    {
-      myDirectionX = -1 * (int)(Math.random() * 2) - 1;
-    }
-    if((int)(Math.random()*2) == 0)
-    {
-      myDirectionY = (int)(Math.random() * 2) + 1;
-    }
-    else
-    {
-      myDirectionY = -1 * (int)(Math.random() * 2) - 1; 
-    }
+    myCenterX = (int)(Math.random()*701);
+    myCenterY = (int)(Math.random()*701);
+    myDirectionX = Math.random() * 4 - 2;
+    myDirectionY = Math.random() * 4 - 2;
   }
   public void move()
   {
