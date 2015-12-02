@@ -5,7 +5,6 @@ boolean left, right, accel;
 int opac;
 public void setup() 
 {
-  background(0);
   size(700,700);
   colorMode(HSB, 100);
   spaceship = new SpaceShip();
@@ -55,9 +54,11 @@ public void draw()
   }
   spaceship.show();
   spaceship.move();
+  fill(0, opac);
+  rect(-1, -1, 701, 701);
   if(opac > 0)
   {
-    opac = opac--;
+    opac--;
   }
     //   noFill();
     // stroke(0, 0, 100);
@@ -78,15 +79,13 @@ public void keyReleased()
   if(key == 'w'){accel = false;}
   if(key == 'h')
   {
-      opac = 100;
-      fill(0, 0, opac);
-      rect(-1, -1, 701, 701);
-      spaceship.setDirectionX(0);
-      spaceship.setDirectionY(0);
-      spaceship.setPointDirection((int)(Math.random()*361));
-      spaceship.setX((int)(Math.random()*701));
-      spaceship.setY((int)(Math.random()*701));
-      spaceship.accelerate(0);
+    opac = 100;
+    spaceship.setDirectionX(0);
+    spaceship.setDirectionY(0);
+    spaceship.setPointDirection((int)(Math.random()*361));
+    spaceship.setX((int)(Math.random()*701));
+    spaceship.setY((int)(Math.random()*701));
+    spaceship.accelerate(0);
   }
 }
 class Star
