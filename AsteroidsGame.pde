@@ -2,7 +2,8 @@ ArrayList <Asteroid> asteroids;
 SpaceShip spaceship;
 Star [] stars;
 boolean left, right, accel, ready;
-int opac, d;
+int opac;
+int d = 70;
 int counter = 500;
 public void setup() 
 {
@@ -97,13 +98,16 @@ public void keyPressed()
   if(key == 'a'){left = true;}
   if(key == 'd'){right = true;}
   if(key == 'w'){accel = true;}
-  if(key == 'h'){d = 70;}
 }
 public void keyReleased()
 {
   if(key == 'a'){left = false;}
   if(key == 'd'){right = false;}
   if(key == 'w'){accel = false;}
+  if(key == 'h')
+  {
+    d = 70;
+  }
 }
 class Star
 {
