@@ -53,17 +53,13 @@ public void draw()
       spaceship.rocket();
     }
   }
-  spaceship.show();
-  spaceship.move();
-  fill(0, 0, 100, opac);
-  rect(-1, -1, 701, 701);
   if(opac > 0){opac--;}
   if(keyPressed == true && key =='h' && ready == true)
   {
     if(d > 0)
     {
       noFill();
-      stroke(0, 0, 100);
+      stroke(0, 70, 90);
       ellipse(spaceship.getX(), spaceship.getY(), d, d);
       d--;
       if(d == 0)
@@ -79,6 +75,10 @@ public void draw()
       }
     }
   }
+  spaceship.show();
+  spaceship.move();
+  fill(0, opac);
+  rect(-1, -1, 701, 701);
   counter++;
   if(counter < 500){ready = false;}
   else{ready = true;}
@@ -276,4 +276,4 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     }   
     endShape(CLOSE);  
   }   
-} 
+}
