@@ -3,7 +3,7 @@ SpaceShip spaceship;
 Star [] stars;
 boolean left, right, accel, ready;
 int opac;
-int d = 70;
+int d = 60;
 int counter = 500;
 public void setup() 
 {
@@ -24,27 +24,26 @@ public void setup()
 public void draw() 
 {
   background(0);
-  for(int i = 0; i < stars.length; i++)
-  {
-    stars[i].show();
-  }
+  for(Star temp : stars){temp.show();}
   for(Asteroid temp : asteroids)
   {
     temp.move();
     temp.show();
   }
-  if(left == true)
+  for(int i = 0; i < asteroids.size(); i++)
   {
-    spaceship.rotate(-6);
+    if(dist(spaceship.getX(), spaceship.getY(), asteroids.get(i).getX(), asteroids.get(i).getY()) < 20)
+    {
+      asteroids.remove(i);
+      i--;
+    }
   }
-  if(right == true)
-  {
-    spaceship.rotate(6);
-  }
+  if(left == true){spaceship.rotate(-4);}
+  if(right == true){spaceship.rotate(4);}
   if(accel == true)
   {
     spaceship.accelerate(.069);
-    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 3)
+    if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 4)
     {
       spaceship.setDirectionX(spaceship.getDirectionX() * .9);
       spaceship.setDirectionY(spaceship.getDirectionY() * .9);
@@ -58,10 +57,7 @@ public void draw()
   spaceship.move();
   fill(0, 0, 100, opac);
   rect(-1, -1, 701, 701);
-  if(opac > 0)
-  {
-    opac--;
-  }
+  if(opac > 0){opac--;}
   if(keyPressed == true && key =='h' && ready == true)
   {
     if(d > 0)
@@ -84,14 +80,8 @@ public void draw()
     }
   }
   counter++;
-  if(counter < 500)
-  {
-    ready = false;
-  }
-  else
-  {
-    ready = true;
-  }
+  if(counter < 500){ready = false;}
+  else{ready = true;}
 }
 public void keyPressed()
 {
@@ -104,10 +94,7 @@ public void keyReleased()
   if(key == 'a'){left = false;}
   if(key == 'd'){right = false;}
   if(key == 'w'){accel = false;}
-  if(key == 'h')
-  {
-    d = 70;
-  }
+  if(key == 'h'){d = 60;}
 }
 class Star
 {
@@ -137,8 +124,8 @@ class Asteroid extends Floater
   {
     rSpeed = (int)(Math.random() * 3) + 2;
     corners = 7;
-    int[] xS = {varyNum(-20), varyNum(-13), varyNum(1), varyNum(13), varyNum(20), varyNum(9), varyNum(-13)};
-    int[] yS = {varyNum(0), varyNum(-11), varyNum(-16), varyNum(-13), varyNum(0), varyNum(16), varyNum(12)};
+    int[] xS = {varyNum(-24), varyNum(-16), varyNum(1), varyNum(16), varyNum(24), varyNum(11), varyNum(-16)};
+    int[] yS = {varyNum(0), varyNum(-13), varyNum(-19), varyNum(-16), varyNum(0), varyNum(19), varyNum(14)};
     xCorners = xS;
     yCorners = yS;
     myColor = color(27, 0, 67);
@@ -172,8 +159,8 @@ class SpaceShip extends Floater
   {
     corners = 8;
     vertices = 3;
-    int[] xS = {-12, -3, 4, 22, 4, -3, -12, -3};
-    int[] yS = {-12, -11, -7, 0, 7, 11, 12, 0};
+    int[] xS = {-10, -2, 3, 18, 3, -2, -10, -2};
+    int[] yS = {-10, -9, -6, 0, 6, 9, 10, 0};
     int[] xR = {-17, -3, -3};
     int[] yR = {0, -9, 9};
     xCorners = xS;
