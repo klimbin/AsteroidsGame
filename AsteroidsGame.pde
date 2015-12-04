@@ -5,6 +5,8 @@ boolean left, right, accel, ready;
 int opac;
 int d = 60;
 int counter = 500;
+int h = 1; //hue of hyperspace ring
+int a = 1;
 public void setup() 
 {
   size(700,700);
@@ -59,7 +61,9 @@ public void draw()
     if(d > 0)
     {
       noFill();
-      stroke(0, 70, 90);
+      strokeWeight(2);
+      stroke(h, 70, 90);
+      h = h + a;
       ellipse(spaceship.getX(), spaceship.getY(), d, d);
       d--;
       if(d == 0)
@@ -72,6 +76,10 @@ public void draw()
         spaceship.setY((int)(Math.random()*601) + 50);
         spaceship.accelerate(0);
         counter = 0;
+      }
+      if(h == 100 || h == 0)
+      {
+        a = a * -1;
       }
     }
   }
