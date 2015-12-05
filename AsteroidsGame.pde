@@ -117,6 +117,7 @@ class Star
   {
     fill(sC);
     stroke(sC);
+    strokeWeight(1);
     ellipse(sX, sY, 2, 2);
   }
 }
