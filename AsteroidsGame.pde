@@ -14,14 +14,8 @@ public void setup()
   spaceship = new SpaceShip();
   asteroids = new ArrayList <Asteroid>();
   stars = new Star[40];
-  for(int i = 0; i < stars.length; i++)
-  {
-    stars[i] = new Star();
-  }
-  for(int i = 0; i < 9; i++)
-  {
-    asteroids.add(new Asteroid());
-  }
+  for(int i = 0; i < stars.length; i++){stars[i] = new Star();}
+  for(int i = 0; i < 9; i++){asteroids.add(new Asteroid());}
 }
 public void draw() 
 {
@@ -50,10 +44,7 @@ public void draw()
       spaceship.setDirectionX(spaceship.getDirectionX() * .9);
       spaceship.setDirectionY(spaceship.getDirectionY() * .9);
     }
-    if(Math.random() < .7)
-    {
-      spaceship.rocket();
-    }
+    if(Math.random() < .7){spaceship.rocket();}
   }
   if(opac > 0){opac--;}
   if(ready == true)
@@ -77,10 +68,7 @@ public void draw()
         spaceship.accelerate(0);
         counter = 0;
       }
-      if(h == 100 || h == 0)
-      {
-        a = a * -1;
-      }
+      if(h == 100 || h == 0){a = a * -1;}
     }
   }
   spaceship.show();
@@ -97,26 +85,26 @@ public void keyPressed()
   if(key == 'a'){left = true;}
   if(key == 'd'){right = true;}
   if(key == 'w'){accel = true;}
-  if(key == 'h')
-  {
-    hold = true;
-    d = 60;
-  }
+  if(key == 'h'){hold = true;}
 }
 public void keyReleased()
 {
   if(key == 'a'){left = false;}
   if(key == 'd'){right = false;}
   if(key == 'w'){accel = false;}
-  if(key == 'h'){hold = false;}
+  if(key == 'h')
+  {
+    hold = false;
+    d = 60;
+  }
 }
 class Star
 {
   private int sX, sY, sC;
   public Star()
   {
-    sX = (int)(Math.random()*700);
-    sY = (int)(Math.random()*700);
+    sX = (int)(Math.random()*701);
+    sY = (int)(Math.random()*701);
     sC = color((int)(Math.random()*101), 70, 70);
   }
   public void show()
