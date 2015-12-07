@@ -71,10 +71,10 @@ public void draw()
       if(h == 100 || h == 0){a = a * -1;}
     }
   }
+  strokeWeight(1);
   spaceship.show();
   spaceship.move();
   fill(0, opac);
-  noStroke();
   rect(-1, -1, 701, 701);
   counter++;
   if(counter < 500){ready = false;}
@@ -111,7 +111,6 @@ class Star
   {
     fill(sC);
     stroke(sC);
-    strokeWeight(1);
     ellipse(sX, sY, 2, 2);
   }
 }
