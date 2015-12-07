@@ -1,7 +1,7 @@
 ArrayList <Asteroid> asteroids;
 SpaceShip spaceship;
 Star [] stars;
-boolean left, right, accel, ready;
+boolean left, right, accel, ready, hold;
 int opac;
 int d = 60;
 int counter = 500;
@@ -56,9 +56,9 @@ public void draw()
     }
   }
   if(opac > 0){opac--;}
-  if(keyPressed == true && key =='h' && ready == true)
+  if(ready == true)
   {
-    if(d > 0)
+    if(hold == true && d > 0)
     {
       noFill();
       strokeWeight(2);
@@ -86,6 +86,7 @@ public void draw()
   spaceship.show();
   spaceship.move();
   fill(0, opac);
+  noStroke();
   rect(-1, -1, 701, 701);
   counter++;
   if(counter < 500){ready = false;}
@@ -96,13 +97,18 @@ public void keyPressed()
   if(key == 'a'){left = true;}
   if(key == 'd'){right = true;}
   if(key == 'w'){accel = true;}
+  if(key == 'h')
+  {
+    hold = true;
+    d = 60;
+  }
 }
 public void keyReleased()
 {
   if(key == 'a'){left = false;}
   if(key == 'd'){right = false;}
   if(key == 'w'){accel = false;}
-  if(key == 'h'){d = 60;}
+  if(key == 'h'){hold = false;}
 }
 class Star
 {
