@@ -8,6 +8,7 @@ int d = 60;
 int counter = 500;
 int h = 1; //hue of hyperspace ring
 int a = 1;
+int bCooldown = 5;
 public void setup() 
 {
   size(700,700);
@@ -50,8 +51,7 @@ public void draw()
       {
         bullets.remove(k);
         asteroids.remove(j);
-        k--;
-        j--;
+        break;
       }
     }
   }
@@ -98,6 +98,7 @@ public void draw()
   fill(0, opac);
   rect(-1, -1, 701, 701);
   counter++;
+  if(bCooldown < 5){bCooldown++;}
   if(counter < 500){ready = false;}
   else{ready = true;}
 }
@@ -109,6 +110,7 @@ public void keyPressed()
   if(key == 'h'){hold = true;}
   if(key == ' ')
   {
+    if(bCooldown == 5)
     bullets.add(new Bullet(spaceship));
   }
 }
@@ -161,7 +163,7 @@ class Bullet extends Floater
     fill(myColor);
     stroke(myColor);
     ellipse((int)myCenterX, (int)myCenterY, 5, 5);
-  }
+  } 
   public void setX(int x){myCenterX = x;}
   public int getX(){return (int)myCenterX;}
   public void setY(int y){myCenterY = y;}
