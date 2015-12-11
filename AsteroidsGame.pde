@@ -98,7 +98,7 @@ public void draw()
   fill(0, opac);
   rect(-1, -1, 701, 701);
   counter++;
-  if(bCooldown < 5){bCooldown++;}
+  if(bCooldown < 10){bCooldown++;}
   if(counter < 500){ready = false;}
   else{ready = true;}
 }
@@ -110,8 +110,11 @@ public void keyPressed()
   if(key == 'h'){hold = true;}
   if(key == ' ')
   {
-    if(bCooldown == 5)
-    bullets.add(new Bullet(spaceship));
+    if(bCooldown == 10)
+    {
+      bullets.add(new Bullet(spaceship));
+      bCooldown = 0;
+    }
   }
 }
 public void keyReleased()
