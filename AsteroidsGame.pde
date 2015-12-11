@@ -55,8 +55,8 @@ public void draw()
       }
     }
   }
-  if(left == true){spaceship.rotate(-4);}
-  if(right == true){spaceship.rotate(4);}
+  if(left == true){spaceship.rotate(-5);}
+  if(right == true){spaceship.rotate(5);}
   if(accel == true)
   {
     spaceship.accelerate(.069);
