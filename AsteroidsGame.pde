@@ -9,7 +9,7 @@ int HYPER_COOLDOWN = 500; // hyperspace cooldown time
 int BULLET_COOLDOWN = 8; //bullet cooldown
 int hue = 1; //hue of hyperspace ring
 int alpha = 1;
-int NUM_ASTEROIDS = 6;
+int NUM_ASTEROIDS = 5;
 int waveNum = 1;
 float textOpac = 100;
 public void setup() 
@@ -257,7 +257,7 @@ class Asteroid extends Floater
   public Asteroid()
   {
     mySize = 3;
-    rSpeed = (int)(Math.random() * 3) + 2;
+    rSpeed = (int)(Math.random() * 2) + 2;
     corners = 7;
     myHitbox = 43;
     int[] xS = {varyNum(-35), varyNum(-23), varyNum(1), varyNum(23), varyNum(35), varyNum(16), varyNum(-23)};
@@ -270,7 +270,7 @@ class Asteroid extends Floater
     myDirectionX = 0;
     myDirectionY = 0;
     myPointDirection = (int)(Math.random()*360);
-    accelerate(Math.random() * (4 - mySize));
+    accelerate(Math.random() * (5 - mySize));
   }
   public void move()
   {
@@ -285,7 +285,7 @@ class Asteroid extends Floater
         xCorners[i] = (int)(xCorners[i]/1.5);
         yCorners[i] = (int)(yCorners[i]/1.5);
       }
-      accelerate(Math.random() * (4 - mySize) + (0.25 * waveNum));
+      accelerate(Math.random() * (4 - mySize));
       mySize--;
     }
   }
