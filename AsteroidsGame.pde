@@ -6,10 +6,10 @@ boolean left, right, accel, ready, hold, shoot;
 int opac = 100;
 int HYPER_DIAMETER = 60; // hyperspace ring size
 int HYPER_COOLDOWN = 500; // hyperspace cooldown time
-int BULLET_COOLDOWN = 5; //bullet cooldown
+int BULLET_COOLDOWN = 8; //bullet cooldown
 int hue = 1; //hue of hyperspace ring
 int alpha = 1;
-int NUM_ASTEROIDS = 5;
+int NUM_ASTEROIDS = 6;
 int waveNum = 1;
 float textOpac = 100;
 public void setup() 
@@ -60,17 +60,18 @@ public void draw()
       if(dist(bullets.get(k).getX(), bullets.get(k).getY(), asteroids.get(j).getX(), asteroids.get(j).getY()) < 30)
       {
         bullets.remove(k);
-        if(asteroids.get(j).getSize() > 1) {
+        int size = asteroids.get(j).getSize();
+        if(size > 1) {
           Asteroid child1 = new Asteroid();
           child1.setX(asteroids.get(j).getX());
           child1.setY(asteroids.get(j).getY());
-          child1.setSize(1);
+          child1.setSize(size-1);
           Asteroid child2 = new Asteroid();
           child2.setX(asteroids.get(j).getX());
           child2.setY(asteroids.get(j).getY());
           asteroids.add(child1);
           asteroids.add(child2);
-          child2.setSize(1);
+          child2.setSize(size-1);
         }
         asteroids.remove(j);
         break;
@@ -103,7 +104,7 @@ public void draw()
   fill(0, opac);
   rect(-1, -1, 701, 701);
   HYPER_COOLDOWN++;
-  if(BULLET_COOLDOWN < 5){BULLET_COOLDOWN++;}
+  if(BULLET_COOLDOWN < 8){BULLET_COOLDOWN++;}
   if(HYPER_COOLDOWN < 500){ready = false;}
   else{ready = true;}
 }
@@ -127,7 +128,7 @@ public void userActions() {
     if(Math.random() < .7){spaceship.rocket();}
   }
   if(shoot == true) {
-    if(BULLET_COOLDOWN == 5 && hold != true)
+    if(BULLET_COOLDOWN == 8 && hold != true)
     {
       bullets.add(new Bullet(spaceship));
       BULLET_COOLDOWN = 0;
@@ -168,7 +169,7 @@ public void restart() {
     textOpac = 100;
     HYPER_DIAMETER = 60;
     HYPER_COOLDOWN = 500;
-    BULLET_COOLDOWN = 5;
+    BULLET_COOLDOWN = 8;
     
     asteroids.clear();
     for(int i = 0; i < NUM_ASTEROIDS; i++){asteroids.add(new Asteroid());}
@@ -255,12 +256,12 @@ class Asteroid extends Floater
   private int mySize;
   public Asteroid()
   {
-    mySize = 2;
+    mySize = 3;
     rSpeed = (int)(Math.random() * 3) + 2;
     corners = 7;
-    myHitbox = 36;
-    int[] xS = {varyNum(-29), varyNum(-19), varyNum(1), varyNum(19), varyNum(29), varyNum(13), varyNum(-19)};
-    int[] yS = {varyNum(0), varyNum(-16), varyNum(-23), varyNum(-19), varyNum(0), varyNum(23), varyNum(17)};
+    myHitbox = 43;
+    int[] xS = {varyNum(-35), varyNum(-23), varyNum(1), varyNum(23), varyNum(35), varyNum(16), varyNum(-23)};
+    int[] yS = {varyNum(0), varyNum(-19), varyNum(-28), varyNum(-23), varyNum(0), varyNum(28), varyNum(20)};
     xCorners = xS;
     yCorners = yS;
     myColor = color(27, 0, 67);
@@ -277,13 +278,16 @@ class Asteroid extends Floater
     super.move();
   }
   public void setSize(int size){
-    mySize = size;
-    myHitbox = myHitbox/2;
-    for(int i = 0; i < xCorners.length; i++) {
-      xCorners[i] = xCorners[i]/2;
-      yCorners[i] = yCorners[i]/2;
+
+    while(mySize != size) {
+      myHitbox = (int)(myHitbox/1.5);
+      for(int i = 0; i < xCorners.length; i++) {
+        xCorners[i] = (int)(xCorners[i]/1.5);
+        yCorners[i] = (int)(yCorners[i]/1.5);
+      }
+      accelerate(Math.random() * (4 - mySize) + (0.25 * waveNum));
+      mySize--;
     }
-    accelerate(Math.random() * (4 - mySize));
   }
   public int getSize(){return mySize;}
   public void setHitbox(int hitbox){myHitbox = hitbox;}
