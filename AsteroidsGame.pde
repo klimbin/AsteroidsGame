@@ -232,8 +232,8 @@ class Bullet extends Floater
   }
   public void show()
   {
-    fill(myColor, 35 + myTime);
-    stroke(myColor, 35 + myTime);
+    fill(myColor, 55 + myTime);
+    stroke(myColor, 55 + myTime);
     ellipse((int)myCenterX, (int)myCenterY, 5, 5);
   }
   public void setTime(int time){myTime = time;}
