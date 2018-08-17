@@ -2,13 +2,16 @@ ArrayList <Asteroid> asteroids;
 SpaceShip spaceship;
 ArrayList <Bullet> bullets;
 Star [] stars;
-boolean left, right, accel, ready, hold;
+boolean left, right, accel, ready, hold, shoot;
 int opac = 100;
-int d = 60;
-int counter = 500;
-int h = 1; //hue of hyperspace ring
-int a = 1;
-int bCooldown = 5;
+int HYPER_DIAMETER = 60; // hyperspace ring size
+int HYPER_COOLDOWN = 500; // hyperspace cooldown time
+int BULLET_COOLDOWN = 5; //bullet cooldown
+int hue = 1; //hue of hyperspace ring
+int alpha = 1;
+int NUM_ASTEROIDS = 5;
+int waveNum = 1;
+float textOpac = 100;
 public void setup() 
 {
   size(700,700);
@@ -18,11 +21,12 @@ public void setup()
   bullets = new ArrayList <Bullet>();
   stars = new Star[40];
   for(int i = 0; i < stars.length; i++){stars[i] = new Star();}
-  for(int i = 0; i < 9; i++){asteroids.add(new Asteroid());}
+  for(int i = 0; i < NUM_ASTEROIDS; i++){asteroids.add(new Asteroid());}
 }
 public void draw() 
 {
   background(0);
+  drawWave();
   for(Star temp : stars){temp.show();}
   for(Asteroid temp : asteroids)
   {
@@ -34,32 +38,87 @@ public void draw()
     temp.show();
     temp.move();
   }
-  for(int i = 0; i < asteroids.size(); i++)
-  {
-    if(dist(spaceship.getX(), spaceship.getY(), asteroids.get(i).getX(), asteroids.get(i).getY()) < 20)
-    {
-      asteroids.remove(i);
-      i--;
-    }
+  for(int i = 0; i < asteroids.size(); i++) {
+    if(dist(spaceship.getX(), spaceship.getY(), asteroids.get(i).getX(), asteroids.get(i).getY()) < asteroids.get(i).getHitbox())
+      {
+        restart();
+      }
   }
+  
+  // draw hitbox
+  //for(int i = 0; i < asteroids.size(); i++) {
+  //    stroke(35, 65, 100);
+  //    noFill();
+  //    rect(asteroids.get(i).getX() - (asteroids.get(i).getHitbox()/2), asteroids.get(i).getY() - (asteroids.get(i).getHitbox()/2), asteroids.get(i).getHitbox(), asteroids.get(i).getHitbox());
+  //}
+
+  // make asteroids split up to two pieces once
   for(int j = 0; j < asteroids.size(); j++)
   {
     for(int k = 0; k < bullets.size(); k++)
     {
-      if(dist(bullets.get(k).getX(), bullets.get(k).getY(), 
-        asteroids.get(j).getX(), asteroids.get(j).getY()) < 20)
+      if(dist(bullets.get(k).getX(), bullets.get(k).getY(), asteroids.get(j).getX(), asteroids.get(j).getY()) < 30)
       {
         bullets.remove(k);
+        if(asteroids.get(j).getSize() > 1) {
+          Asteroid child1 = new Asteroid();
+          child1.setX(asteroids.get(j).getX());
+          child1.setY(asteroids.get(j).getY());
+          child1.setSize(1);
+          Asteroid child2 = new Asteroid();
+          child2.setX(asteroids.get(j).getX());
+          child2.setY(asteroids.get(j).getY());
+          asteroids.add(child1);
+          asteroids.add(child2);
+          child2.setSize(1);
+        }
         asteroids.remove(j);
         break;
       }
     }
   }
+  
+  for(int i = 0; i < bullets.size(); i++) {
+    bullets.get(i).setTime(bullets.get(i).getTime() - 1);
+    if(bullets.get(i).getTime() == 0) {
+      bullets.remove(i);
+    }
+  }
+  
+  // new wave, increase difficulty
+  if(asteroids.size() == 0) {
+    waveNum++;
+    NUM_ASTEROIDS++;
+    textOpac = 100;
+    opac = 80;
+    for(int i = 0; i < NUM_ASTEROIDS; i++){asteroids.add(new Asteroid());}
+  }
+  
+  if(textOpac > 0){textOpac = textOpac - 0.4;}
+  if(opac > 0){opac--;}
+  userActions();
+  strokeWeight(1);
+  spaceship.show();
+  spaceship.move();
+  fill(0, opac);
+  rect(-1, -1, 701, 701);
+  HYPER_COOLDOWN++;
+  if(BULLET_COOLDOWN < 5){BULLET_COOLDOWN++;}
+  if(HYPER_COOLDOWN < 500){ready = false;}
+  else{ready = true;}
+}
+public void drawWave() {
+  fill(35, 65, 100, textOpac);
+  textAlign(CENTER);
+  textSize(50);
+  text("WAVE " + waveNum, 350, 475);
+}
+public void userActions() {
   if(left == true){spaceship.rotate(-5);}
   if(right == true){spaceship.rotate(5);}
   if(accel == true)
   {
-    spaceship.accelerate(.069);
+    spaceship.accelerate(.1);
     if(dist((int)(spaceship.getDirectionX()), 0, 0, (int)(spaceship.getDirectionY())) > 4)
     {
       spaceship.setDirectionX(spaceship.getDirectionX() * .9);
@@ -67,18 +126,24 @@ public void draw()
     }
     if(Math.random() < .7){spaceship.rocket();}
   }
-  if(opac > 0){opac--;}
+  if(shoot == true) {
+    if(BULLET_COOLDOWN == 5 && hold != true)
+    {
+      bullets.add(new Bullet(spaceship));
+      BULLET_COOLDOWN = 0;
+    }
+  }
   if(ready == true)
   {
-    if(hold == true && d > 0)
+    if(hold == true && HYPER_DIAMETER > 0)
     {
       noFill();
       strokeWeight(2);
-      stroke(h, 70, 90);
-      h = h + a;
-      ellipse(spaceship.getX(), spaceship.getY(), d, d);
-      d--;
-      if(d == 0)
+      stroke(hue, 70, 90);
+      hue = hue + alpha;
+      ellipse(spaceship.getX(), spaceship.getY(), HYPER_DIAMETER, HYPER_DIAMETER);
+      HYPER_DIAMETER--;
+      if(HYPER_DIAMETER == 0)
       {
         opac = 100;
         spaceship.setDirectionX(0);
@@ -87,20 +152,26 @@ public void draw()
         spaceship.setX((int)(Math.random()*601) + 50);
         spaceship.setY((int)(Math.random()*601) + 50);
         spaceship.accelerate(0);
-        counter = 0;
+        HYPER_COOLDOWN = 0;
       }
-      if(h == 100 || h == 0){a = a * -1;}
+      if(hue == 100 || hue == 0){alpha = alpha * -1;}
     }
   }
-  strokeWeight(1);
-  spaceship.show();
-  spaceship.move();
-  fill(0, opac);
-  rect(-1, -1, 701, 701);
-  counter++;
-  if(bCooldown < 10){bCooldown++;}
-  if(counter < 500){ready = false;}
-  else{ready = true;}
+}
+public void restart() {
+    spaceship.setX(350);
+    spaceship.setY(350);
+    spaceship.setDirectionX(0);
+    spaceship.setDirectionY(0);
+    spaceship.setPointDirection((int)(Math.random()*360));
+    opac = 100;
+    textOpac = 100;
+    HYPER_DIAMETER = 60;
+    HYPER_COOLDOWN = 500;
+    BULLET_COOLDOWN = 5;
+    
+    asteroids.clear();
+    for(int i = 0; i < NUM_ASTEROIDS; i++){asteroids.add(new Asteroid());}
 }
 public void keyPressed()
 {
@@ -108,14 +179,7 @@ public void keyPressed()
   if(key == 'd'){right = true;}
   if(key == 'w'){accel = true;}
   if(key == 'h'){hold = true;}
-  if(key == ' ')
-  {
-    if(bCooldown == 10)
-    {
-      bullets.add(new Bullet(spaceship));
-      bCooldown = 0;
-    }
-  }
+  if(key == ' '){shoot = true;}
 }
 public void keyReleased()
 {
@@ -125,8 +189,9 @@ public void keyReleased()
   if(key == 'h')
   {
     hold = false;
-    d = 60;
+    HYPER_DIAMETER = 60;
   }
+  if(key == ' '){shoot = false;}
 }
 class Star
 {
@@ -151,22 +216,27 @@ public int varyNum(int num)
 }
 class Bullet extends Floater
 {
+  private int myTime;
   public Bullet(SpaceShip theShip)
   {
     myCenterX = theShip.getX();
     myCenterY = theShip.getY();
-    myPointDirection = theShip.getPointDirection();
+    myPointDirection = theShip.getPointDirection() + (Math.random()*7)-3;
     double dRadians = myPointDirection*(Math.PI/180);
-    myDirectionX = 5*Math.cos(dRadians) + theShip.getDirectionX();
-    myDirectionY = 5*Math.sin(dRadians) + theShip.getDirectionY();
+    myDirectionX = Math.cos(dRadians) + theShip.getDirectionX();
+    myDirectionY = Math.sin(dRadians) + theShip.getDirectionY();
     myColor = color(0, 80, 90);
+    accelerate(5);
+    myTime = 80;
   }
   public void show()
   {
-    fill(myColor);
-    stroke(myColor);
+    fill(myColor, 35 + myTime);
+    stroke(myColor, 35 + myTime);
     ellipse((int)myCenterX, (int)myCenterY, 5, 5);
-  } 
+  }
+  public void setTime(int time){myTime = time;}
+  public int getTime(){return myTime;}
   public void setX(int x){myCenterX = x;}
   public int getX(){return (int)myCenterX;}
   public void setY(int y){myCenterY = y;}
@@ -181,25 +251,43 @@ class Bullet extends Floater
 class Asteroid extends Floater
 {
   private int rSpeed;
+  private int myHitbox;
+  private int mySize;
   public Asteroid()
   {
+    mySize = 2;
     rSpeed = (int)(Math.random() * 3) + 2;
     corners = 7;
-    int[] xS = {varyNum(-24), varyNum(-16), varyNum(1), varyNum(16), varyNum(24), varyNum(11), varyNum(-16)};
-    int[] yS = {varyNum(0), varyNum(-13), varyNum(-19), varyNum(-16), varyNum(0), varyNum(19), varyNum(14)};
+    myHitbox = 36;
+    int[] xS = {varyNum(-29), varyNum(-19), varyNum(1), varyNum(19), varyNum(29), varyNum(13), varyNum(-19)};
+    int[] yS = {varyNum(0), varyNum(-16), varyNum(-23), varyNum(-19), varyNum(0), varyNum(23), varyNum(17)};
     xCorners = xS;
     yCorners = yS;
     myColor = color(27, 0, 67);
     myCenterX = Math.random() * 701;
     myCenterY = Math.random() * 701;
-    myDirectionX = Math.random() * 4 - 2;
-    myDirectionY = Math.random() * 4 - 2;
+    myDirectionX = 0;
+    myDirectionY = 0;
+    myPointDirection = (int)(Math.random()*360);
+    accelerate(Math.random() * (4 - mySize));
   }
   public void move()
   {
     rotate(rSpeed);
     super.move();
   }
+  public void setSize(int size){
+    mySize = size;
+    myHitbox = myHitbox/2;
+    for(int i = 0; i < xCorners.length; i++) {
+      xCorners[i] = xCorners[i]/2;
+      yCorners[i] = yCorners[i]/2;
+    }
+    accelerate(Math.random() * (4 - mySize));
+  }
+  public int getSize(){return mySize;}
+  public void setHitbox(int hitbox){myHitbox = hitbox;}
+  public int getHitbox(){return myHitbox;}
   public void setX(int x){myCenterX = x;}
   public int getX(){return (int)myCenterX;}
   public void setY(int y){myCenterY = y;}
@@ -233,7 +321,7 @@ class SpaceShip extends Floater
     myCenterY = 350;
     myDirectionX = 0;
     myDirectionY = 0;
-    myPointDirection = 0;
+    myPointDirection = (int)(Math.random()*360);
   }
   public void setX(int x){myCenterX = x;}
   public int getX(){return (int)myCenterX;}
